@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { 
   Mail, Code2, Server, Database, Sparkles, 
@@ -40,14 +40,17 @@ export default function Home() {
   const [showSpectral, setShowSpectral] = useState(false);
   const [copied, setCopied] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const runIdRef = useRef(0);
 
   const runAStarDemo = async () => {
+    const runId = ++runIdRef.current;
     setIsPathfinding(true);
     setVisitedNodes([]);
     setActivePath([]);
 
     for (let i = 0; i < ASTAR_STEPS.length; i++) {
       await new Promise((res) => setTimeout(res, 120));
+      if (runIdRef.current !== runId) return;
       setVisitedNodes((prev) => [...prev, ASTAR_STEPS[i]]);
     }
 
@@ -56,6 +59,7 @@ export default function Home() {
   };
 
   const resetGrid = () => {
+    runIdRef.current++;
     setVisitedNodes([]);
     setActivePath([]);
     setIsPathfinding(false);
@@ -131,7 +135,7 @@ export default function Home() {
           <div className="lg:col-span-7">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-6">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>FAST-NUCES '26 - BS Computer Science (CGPA 3.51)</span>
+              <span>FAST-NUCES &apos;26 - BS Computer Science (CGPA 3.51)</span>
             </div>
 
             <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-slate-100 mb-6 max-w-3xl leading-[1.1]">
@@ -501,7 +505,7 @@ export default function Home() {
               <span className="text-xs font-mono text-emerald-400">The City School — Aug 2019 to Jul 2020</span>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Led student body representation and organized campus events including Teacher's Day, Qawwali Night, and conceptualized "InspireII" Science Olympiad. Led the school debate team to multiple victories, secured 2nd place as runners-up in inter-branch robotics, and earned High-Achiever recognition on the school honor wall.
+              Led student body representation and organized campus events including Teacher&apos;s Day, Qawwali Night, and conceptualized &quot;InspireII&quot; Science Olympiad. Led the school debate team to multiple victories, secured 2nd place as runners-up in inter-branch robotics, and earned High-Achiever recognition on the school honor wall.
             </p>
           </div>
         </div>
@@ -509,7 +513,7 @@ export default function Home() {
 
       {/* Footer Contact */}
       <footer id="contact" className="py-16 px-6 max-w-6xl mx-auto border-t border-slate-800/60 text-center">
-        <h2 className="text-2xl font-bold text-slate-100 mb-4">Let's Connect</h2>
+        <h2 className="text-2xl font-bold text-slate-100 mb-4">Let&apos;s Connect</h2>
         <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto">
           Currently open to software development opportunities, backend engineering roles, and collaborative projects.
         </p>
