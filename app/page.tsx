@@ -349,6 +349,15 @@ export default function Home() {
 
             {/* Step-by-step Interactive Grid Sandbox */}
             <div className="lg:col-span-5 p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
+  {/* Brad Pitt video – keeps playing, muted for autoplay */}
+  <video
+    ref={videoRef}
+    playsInline
+    autoPlay
+    muted
+    className="w-full h-48 object-cover"
+    onClick={handleVideoClick}
+  />
               <div className="flex items-center justify-between text-xs font-mono text-slate-400">
                 <span>5x5 Mini Grid Visualizer</span>
                 <span>{activePath.length > 0 ? 'Path Solved' : isPathfinding ? 'Exploring...' : 'A* Idle'}</span>
