@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { 
   Mail, Code2, Server, Database, Sparkles, 
@@ -39,7 +39,50 @@ export default function Home() {
   const [isPathfinding, setIsPathfinding] = useState(false);
   const [showSpectral, setShowSpectral] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [showGradcam, setShowGradcam] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const runIdRef = useRef(0);
+
+  const handleVideoClick = () => {
+    setShowScanner(true);
+    setTimeout(() => {
+      setShowScanner(false);
+      setShowGradcam(true);
+    }, 400);
+  };
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes scanner-updown-leftright {
+        0%   { transform: translate(0, 0); }
+        25%  { transform: translate(100vw, 0); }
+        50%  { transform: translate(100vw, 100vh); }
+        75%  { transform: translate(0, 100vh); }
+        100% { transform: translate(0, 0); }
+      }
+      .scanner-anim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, #00ff00, #00aa00);
+        animation: scanner-updown-leftright 400ms ease-in-out forwards;
+        pointer-events: none;
+      }
+      .gradcam-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+      }
+      .gradcam-img.visible { display: block; }
+      video { width: 100%; height: auto; }
+    `;
+    document.head.appendChild(style);
+    return () => { document.head.removeChild(style); };
+  }, []);
 
   const runAStarDemo = async () => {
     const runId = ++runIdRef.current;
@@ -66,6 +109,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
+      {showScanner && <div className="scanner-anim" />}
+      {showGradcam && (<img src="/id1_0009_gradcam.png" alt="GradCAM" className="gradcam-img visible" />)}
       
       {/* Navigation */}
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80">
