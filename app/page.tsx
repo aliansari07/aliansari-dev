@@ -109,9 +109,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
-      {showScanner && <div className="scanner-anim" />}
-      {showGradcam && (<img src="/id1_0009_gradcam.png" alt="GradCAM" className="gradcam-img visible" />)}
-      
       {/* Navigation */}
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -296,8 +293,17 @@ export default function Home() {
             </div>
 
             {/* Interactive Heatmap Toggle Card */}
-            <div className="lg:col-span-5 p-5 rounded-xl bg-slate-950 border border-slate-800 text-center space-y-4">
-              <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <div className="lg:col-span-5 p-5 rounded-xl bg-slate-950 border border-slate-800 text-center space-y-4 h-[400px] min-h-[300px] overflow-hidden">
+  {/* Brad Pitt video – keeps playing, muted for autoplay */}
+  <video
+    ref={videoRef}
+    playsInline
+    autoPlay
+    muted
+    className="w-full h-48 object-cover"
+    onClick={handleVideoClick}
+  />
+  <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
                 <span>Interactive Visualizer</span>
                 <span className="text-emerald-400 flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> Live Preview</span>
               </div>
@@ -318,16 +324,16 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <button
+<button
                 onClick={() => setShowSpectral(!showSpectral)}
                 className="w-full py-2 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono transition-colors border border-slate-700 flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-3.5 h-3.5" /> Toggle {showSpectral ? 'Spatial View' : 'Spectral FFT View'}
               </button>
             </div>
+            {showScanner && <div className="scanner-anim" />}
+            {showGradcam && (<img src="/id1_0009_gradcam.png" alt="GradCAM" className="gradcam-img visible" />)}
           </div>
-
-          {/* Project 2: StarSeeker */}
           <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
               <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
@@ -349,15 +355,6 @@ export default function Home() {
 
             {/* Step-by-step Interactive Grid Sandbox */}
             <div className="lg:col-span-5 p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
-  {/* Brad Pitt video – keeps playing, muted for autoplay */}
-  <video
-    ref={videoRef}
-    playsInline
-    autoPlay
-    muted
-    className="w-full h-48 object-cover"
-    onClick={handleVideoClick}
-  />
               <div className="flex items-center justify-between text-xs font-mono text-slate-400">
                 <span>5x5 Mini Grid Visualizer</span>
                 <span>{activePath.length > 0 ? 'Path Solved' : isPathfinding ? 'Exploring...' : 'A* Idle'}</span>
