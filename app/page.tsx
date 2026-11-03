@@ -394,10 +394,18 @@ export default function Home() {
                   Reset
                 </button>
               </div>
-            </div>
-          </div>
-
-          {/* Project 3: Enterprise Resource Management */}
+</div>
+           </div>
+          {/* Brad Pitt video – keeps playing, muted for autoplay */}
+          <video
+            ref={videoRef}
+            playsInline
+            autoPlay
+            muted
+            className="w-full h-48 object-cover"
+            onClick={handleVideoClick}
+          />
+           {/* Project 3: Enterprise Resource Management */}
           <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all">
             <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 mb-3">
               <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Enterprise Backend</span>
