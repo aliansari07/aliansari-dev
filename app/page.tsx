@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { 
   Mail, Code2, Server, Database, Sparkles, 
-  ChevronRight, Play, RefreshCw, Eye, Download, Check, Menu, X 
+  ChevronRight, Play, RefreshCw, Eye, Download, Menu, X 
 } from 'lucide-react';
 
 const GithubIcon = () => (
@@ -38,7 +38,6 @@ export default function Home() {
   const [activePath, setActivePath] = useState<number[][]>([]);
   const [isPathfinding, setIsPathfinding] = useState(false);
   const [showSpectral, setShowSpectral] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const runIdRef = useRef(0);
 
@@ -65,12 +64,6 @@ export default function Home() {
     setIsPathfinding(false);
   };
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText('aliansari224135@gmail.com');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       
@@ -90,13 +83,13 @@ export default function Home() {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <button
-              onClick={handleCopyEmail}
+            <a
+              href="mailto:aliansari224135@gmail.com"
               className="px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Mail className="w-3.5 h-3.5" />}
-              {copied ? 'Email Copied!' : 'Get in Touch'}
-            </button>
+              <Mail className="w-3.5 h-3.5" />
+              Get in Touch
+            </a>
           </div>
 
           {/* Mobile Menu Toggle Button */}
@@ -117,13 +110,14 @@ export default function Home() {
             <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">Skills</a>
             <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">Experience</a>
             <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">Contact</a>
-            <button
-              onClick={() => { handleCopyEmail(); setMobileMenuOpen(false); }}
+            <a
+              href="mailto:aliansari224135@gmail.com"
+              onClick={() => setMobileMenuOpen(false)}
               className="mt-2 w-full py-2.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-center flex items-center justify-center gap-2"
             >
-              {copied ? <Check className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
-              {copied ? 'Email Copied!' : 'Copy Email Address'}
-            </button>
+              <Mail className="w-4 h-4" />
+              Email Me
+            </a>
           </div>
         )}
       </nav>
@@ -518,13 +512,13 @@ export default function Home() {
           Currently open to software development opportunities, backend engineering roles, and collaborative projects.
         </p>
         <div className="flex justify-center items-center gap-6 mb-12">
-          <button 
-            onClick={handleCopyEmail}
-            title="Copy Email Address"
+          <a
+            href="mailto:aliansari224135@gmail.com"
+            title="Email Me"
             className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all flex items-center justify-center"
           >
-            {copied ? <Check className="w-5 h-5 text-emerald-400" /> : <Mail className="w-5 h-5" />}
-          </button>
+            <Mail className="w-5 h-5" />
+          </a>
           <a href="https://github.com/aliansari07" target="_blank" rel="noreferrer" className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
             <GithubIcon />
           </a>
