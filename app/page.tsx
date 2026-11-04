@@ -19,30 +19,108 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-const INITIAL_GRID = [
-  [0, 0, 0, 1, 0],
-  [0, 1, 0, 1, 0],
-  [0, 1, 0, 0, 0],
-  [0, 0, 1, 1, 0],
-  [0, 0, 0, 0, 0],
+const GRID_SIZE = 12;
+const START_POS: [number, number] = [0, 0];
+const END_POS: [number, number] = [GRID_SIZE - 1, GRID_SIZE - 1];
+
+const DEFAULT_WALLS = new Set<string>([
+  '2,1', '2,2', '2,3', '2,4', '2,5', '2,6', '2,7', '2,8', '2,9',
+  '5,2', '5,3', '5,4', '5,5', '5,6', '5,7', '5,8', '5,9', '5,10',
+  '8,1', '8,2', '8,3', '8,4', '8,5', '8,6', '8,7', '8,8', '8,9',
+  '3,4', '3,8', '4,4', '4,8',
+  '6,4', '6,8', '7,4', '7,8',
+  '9,4', '9,8', '10,4', '10,8',
+  '1,6', '4,1', '7,10', '10,6',
+]);
+
+const createGrid = (): number[][] =>
+  Array.from({ length: GRID_SIZE }, (_, r) =>
+    Array.from({ length: GRID_SIZE }, (_, c) =>
+      DEFAULT_WALLS.has(`${r},${c}`) ? 1 : 0
+    )
+  );
+
+const THREAD_COLORS = [
+  'bg-emerald-500/30 text-emerald-200 border-emerald-500/40',
+  'bg-cyan-500/30 text-cyan-200 border-cyan-500/40',
+  'bg-indigo-500/30 text-indigo-200 border-indigo-500/40',
+  'bg-fuchsia-500/30 text-fuchsia-200 border-fuchsia-500/40',
 ];
 
-const ASTAR_STEPS = [
-  [0, 0], [0, 1], [0, 2],
-  [1, 2], [2, 2], [2, 3],
-  [2, 4], [3, 4], [4, 4]
-];
+const findPath = (
+  walls: number[][],
+  start: [number, number],
+  end: [number, number]
+): { order: [number, number][]; path: [number, number][] } => {
+  const queue: [number, number][] = [start];
+  const seen = new Set<string>([`${start[0]},${start[1]}`]);
+  const parent = new Map<string, string>();
+  const order: [number, number][] = [];
+
+  while (queue.length > 0) {
+    const [r, c] = queue.shift() as [number, number];
+    order.push([r, c]);
+    if (r === end[0] && c === end[1]) break;
+
+    const neighbors: [number, number][] = [
+      [r - 1, c],
+      [r + 1, c],
+      [r, c - 1],
+      [r, c + 1],
+    ];
+
+    for (const [nr, nc] of neighbors) {
+      if (nr < 0 || nr >= GRID_SIZE || nc < 0 || nc >= GRID_SIZE) continue;
+      if (walls[nr][nc] === 1) continue;
+      const key = `${nr},${nc}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      parent.set(key, `${r},${c}`);
+      queue.push([nr, nc]);
+    }
+  }
+
+  const startKey = `${start[0]},${start[1]}`;
+  const endKey = `${end[0]},${end[1]}`;
+  const path: [number, number][] = [];
+
+  if (seen.has(endKey)) {
+    let cursor = endKey;
+    while (cursor !== startKey) {
+      const [r, c] = cursor.split(',').map(Number);
+      path.push([r, c]);
+      const prev = parent.get(cursor);
+      if (!prev) break;
+      cursor = prev;
+    }
+    path.push(start);
+    path.reverse();
+  }
+
+  return { order, path };
+};
 
 export default function Home() {
-  const [visitedNodes, setVisitedNodes] = useState<number[][]>([]);
-  const [activePath, setActivePath] = useState<number[][]>([]);
-  const [isPathfinding, setIsPathfinding] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // States for Grad-CAM Heatmap Toggle
   const [isScanning, setIsScanning] = useState(false);
   const [showGradcam, setShowGradcam] = useState(false);
 
+  // States for OpenMP Parallel Pathfinding Visualizer
+  const [grid, setGrid] = useState<number[][]>(() => createGrid());
+  const [visited, setVisited] = useState<Map<string, number>>(() => new Map());
+  const [path, setPath] = useState<[number, number][]>([]);
+  const [stats, setStats] = useState({
+    nodesExplored: 0,
+    pathLength: 0,
+    executionTimeMs: 0,
+  });
+  const [isSearching, setIsSearching] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
+
+  const startPos = START_POS;
+  const endPos = END_POS;
   const runIdRef = useRef(0);
 
   const handleToggleSpectral = () => {
@@ -84,27 +162,100 @@ export default function Home() {
     return () => { document.head.removeChild(style); };
   }, []);
 
-  const runAStarDemo = async () => {
-    const runId = ++runIdRef.current;
-    setIsPathfinding(true);
-    setVisitedNodes([]);
-    setActivePath([]);
+  // Stop wall drawing if the mouse is released outside the mesh
+  useEffect(() => {
+    const handleMouseUp = () => setIsMouseDown(false);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => window.removeEventListener('mouseup', handleMouseUp);
+  }, []);
 
-    for (let i = 0; i < ASTAR_STEPS.length; i++) {
-      await new Promise((res) => setTimeout(res, 120));
-      if (runIdRef.current !== runId) return;
-      setVisitedNodes((prev) => [...prev, ASTAR_STEPS[i]]);
+  const clearSearch = () => {
+    setVisited(new Map());
+    setPath([]);
+    setStats({ nodesExplored: 0, pathLength: 0, executionTimeMs: 0 });
+  };
+
+  const toggleWall = (r: number, c: number) => {
+    if (isSearching) return;
+    if (
+      (r === startPos[0] && c === startPos[1]) ||
+      (r === endPos[0] && c === endPos[1])
+    ) {
+      return;
     }
 
-    setActivePath(ASTAR_STEPS);
-    setIsPathfinding(false);
+    runIdRef.current += 1;
+    clearSearch();
+    setGrid((prev) => {
+      const next = prev.map((row) => [...row]);
+      next[r][c] = next[r][c] === 1 ? 0 : 1;
+      return next;
+    });
   };
 
   const resetGrid = () => {
-    runIdRef.current++;
-    setVisitedNodes([]);
-    setActivePath([]);
-    setIsPathfinding(false);
+    runIdRef.current += 1;
+    setIsSearching(false);
+    setGrid(createGrid());
+    clearSearch();
+  };
+
+  const runParallelAStar = async () => {
+    if (isSearching) return;
+
+    const runId = ++runIdRef.current;
+    const { order, path: solution } = findPath(grid, startPos, endPos);
+
+    setIsSearching(true);
+    clearSearch();
+
+    const nextVisited = new Map<string, number>();
+    const startedAt = Date.now();
+
+    // Emit up to 4 nodes per tick to mimic four threads exploring in parallel
+    for (let i = 0; i < order.length; i += 4) {
+      if (runIdRef.current !== runId) return;
+
+      const chunkEnd = Math.min(i + 4, order.length);
+      for (let j = i; j < chunkEnd; j += 1) {
+        const [r, c] = order[j];
+        nextVisited.set(`${r},${c}`, j % 4);
+      }
+
+      setVisited(new Map(nextVisited));
+      setStats({
+        nodesExplored: nextVisited.size,
+        pathLength: 0,
+        executionTimeMs: Date.now() - startedAt,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 35));
+    }
+
+    if (runIdRef.current !== runId) return;
+
+    if (solution.length === 0) {
+      setStats({
+        nodesExplored: nextVisited.size,
+        pathLength: 0,
+        executionTimeMs: Date.now() - startedAt,
+      });
+      setIsSearching(false);
+      return;
+    }
+
+    for (let i = 1; i <= solution.length; i += 1) {
+      if (runIdRef.current !== runId) return;
+      setPath(solution.slice(0, i));
+      setStats({
+        nodesExplored: nextVisited.size,
+        pathLength: i,
+        executionTimeMs: Date.now() - startedAt,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+
+    setIsSearching(false);
   };
 
   return (
@@ -352,50 +503,88 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Step-by-step Interactive Grid Sandbox */}
-            <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-slate-400">
-                <span>5x5 Mini Grid Visualizer</span>
-                <span>{activePath.length > 0 ? 'Path Solved' : isPathfinding ? 'Exploring...' : 'A* Idle'}</span>
+            {/* Step-by-step Interactive High-Performance Mesh Console */}
+            <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3 font-mono">
+              {/* Console Header */}
+              <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5">
+                <div className="flex items-center gap-2 text-xs text-slate-300 font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>OpenMP Mesh Visualizer</span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                  <span className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-emerald-400">8 Threads</span>
+                  <span>12x12 Grid</span>
+                </div>
               </div>
-              <div className="grid grid-cols-5 gap-1.5 justify-center py-2">
-                {INITIAL_GRID.map((row, rIdx) => 
-                  row.map((cell, cIdx) => {
-                    const isStart = rIdx === 0 && cIdx === 0;
-                    const isEnd = rIdx === 4 && cIdx === 4;
-                    const isVisited = visitedNodes.some(([r, c]) => r === rIdx && c === cIdx);
-                    const isFinalPath = activePath.some(([r, c]) => r === rIdx && c === cIdx);
-                    
-                    let cellStyle = 'bg-slate-900 text-slate-700 border border-slate-800';
-                    if (isStart) cellStyle = 'bg-emerald-500 text-slate-950 font-bold';
-                    else if (isEnd) cellStyle = 'bg-indigo-500 text-white font-bold';
-                    else if (cell === 1) cellStyle = 'bg-slate-800 text-slate-600';
-                    else if (isFinalPath) cellStyle = 'bg-emerald-400 text-slate-950 font-bold scale-105';
-                    else if (isVisited) cellStyle = 'bg-indigo-900/60 text-indigo-300 border-indigo-700/50';
+
+              {/* Interactive Mesh */}
+              <div
+                className="grid grid-cols-12 gap-1 bg-slate-900/90 p-2 rounded-lg border border-slate-800/80 shadow-inner select-none"
+                onMouseDown={() => setIsMouseDown(true)}
+                onMouseUp={() => setIsMouseDown(false)}
+              >
+                {grid.map((row, r) =>
+                  row.map((cell, c) => {
+                    const isStart = r === startPos[0] && c === startPos[1];
+                    const isEnd = r === endPos[0] && c === endPos[1];
+                    const key = `${r},${c}`;
+                    const threadId = visited.get(key);
+                    const isPath = path.some(([pr, pc]) => pr === r && pc === c);
+
+                    let style = 'bg-slate-950/60 border-slate-800/60 hover:border-emerald-500/40';
+
+                    if (isStart) style = 'bg-emerald-500 text-slate-950 font-bold border-emerald-400 shadow-md shadow-emerald-500/20';
+                    else if (isEnd) style = 'bg-indigo-500 text-white font-bold border-indigo-400 shadow-md shadow-indigo-500/20';
+                    else if (isPath) style = 'bg-emerald-400 text-slate-950 font-bold border-emerald-300 z-10 transition-all duration-300';
+                    else if (threadId !== undefined) style = THREAD_COLORS[threadId];
+                    else if (cell === 1) style = 'bg-slate-800 border-slate-700 shadow-inner';
 
                     return (
-                      <div 
-                        key={`${rIdx}-${cIdx}`}
-                        className={`aspect-square rounded flex items-center justify-center text-[10px] font-mono transition-all duration-200 ${cellStyle}`}
+                      <button
+                        key={key}
+                        type="button"
+                        onMouseDown={() => toggleWall(r, c)}
+                        onMouseEnter={() => isMouseDown && toggleWall(r, c)}
+                        className={`aspect-square rounded-[3px] border flex items-center justify-center text-[9px] transition-all duration-150 ${style}`}
                       >
-                        {isStart ? 'S' : isEnd ? 'E' : cell === 1 ? 'X' : ''}
-                      </div>
+                        {isStart ? 'S' : isEnd ? 'E' : ''}
+                      </button>
                     );
                   })
                 )}
               </div>
+
+              {/* Real-time Telemetry Bar */}
+              <div className="grid grid-cols-3 gap-1.5 text-center py-1.5 px-2 bg-slate-900/50 rounded-lg border border-slate-800/60 text-[11px]">
+                <div>
+                  <div className="text-slate-400 text-[10px]">Explored</div>
+                  <div className="font-bold text-emerald-400">{stats.nodesExplored}</div>
+                </div>
+                <div className="border-x border-slate-800/60">
+                  <div className="text-slate-400 text-[10px]">Path Length</div>
+                  <div className="font-bold text-indigo-400">{stats.pathLength}</div>
+                </div>
+                <div>
+                  <div className="text-slate-400 text-[10px]">Simulated Time</div>
+                  <div className="font-bold text-emerald-400">{stats.executionTimeMs}ms</div>
+                </div>
+              </div>
+
+              {/* Controls */}
               <div className="flex flex-col sm:flex-row gap-2">
                 <button
-                  onClick={runAStarDemo}
-                  disabled={isPathfinding}
-                  className="flex-1 py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold font-mono transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  onClick={runParallelAStar}
+                  disabled={isSearching}
+                  className="flex-1 py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
                 >
-                  <Play className="w-3.5 h-3.5" /> {isPathfinding ? 'Searching...' : 'Run Parallel Search'}
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  {isSearching ? 'Executing Parallel Search...' : 'Run OpenMP Search'}
                 </button>
                 <button
                   onClick={resetGrid}
-                  className="w-full sm:w-auto py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono transition-colors"
+                  className="w-full sm:w-auto py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors flex items-center justify-center gap-1.5"
                 >
+                  <RefreshCw className="w-3.5 h-3.5" />
                   Reset
                 </button>
               </div>
