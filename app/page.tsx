@@ -37,21 +37,27 @@ export default function Home() {
   const [visitedNodes, setVisitedNodes] = useState<number[][]>([]);
   const [activePath, setActivePath] = useState<number[][]>([]);
   const [isPathfinding, setIsPathfinding] = useState(false);
-  const [showSpectral, setShowSpectral] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showScanner, setShowScanner] = useState(false);
+  
+  // States for Grad-CAM Heatmap Toggle
+  const [isScanning, setIsScanning] = useState(false);
   const [showGradcam, setShowGradcam] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+
   const runIdRef = useRef(0);
 
-  const handleVideoClick = () => {
-    setShowScanner(true);
-    setTimeout(() => {
-      setShowScanner(false);
-      setShowGradcam(true);
-    }, 400);
+  const handleToggleSpectral = () => {
+    if (showGradcam) {
+      setShowGradcam(false);
+    } else {
+      setIsScanning(true);
+      setTimeout(() => {
+        setIsScanning(false);
+        setShowGradcam(true);
+      }, 3000);
+    }
   };
 
+  // Inject dynamic styles for scanner animation
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -66,23 +72,13 @@ export default function Home() {
         position: absolute;
         inset: 0;
         background: linear-gradient(90deg, #00ff00, #00aa00);
-        animation: scanner-updown-leftright 400ms ease-in-out forwards;
+        animation: scanner-updown-leftright 1.5s ease-in-out infinite;
         pointer-events: none;
       }
-      .gradcam-img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: none;
-      }
-      .gradcam-img.visible { display: block; }
       .interactive-container {
         position: relative;
         overflow: hidden;
       }
-      video { width: 100%; height: auto; }
     `;
     document.head.appendChild(style);
     return () => { document.head.removeChild(style); };
@@ -234,9 +230,10 @@ export default function Home() {
                   priority
                   className="w-full h-auto object-cover object-top filter brightness-105 contrast-105 group-hover:scale-105 transition-transform duration-500"
                 />
+              </div>
             </div>
           </div>
-          </div>
+
         </div>
 
         {/* Metrics Grid */}
@@ -288,56 +285,51 @@ export default function Home() {
                 ))}
               </div>
             </div>
+{/* Interactive Heatmap Toggle Card */}
+<div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 text-center flex flex-col gap-4 overflow-hidden interactive-container">
+  <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-slate-400">
+    <span>Interactive Visualizer</span>
+    <span className="text-emerald-400 flex items-center gap-1">
+      <Eye className="w-3.5 h-3.5" /> Live Preview
+    </span>
+  </div>
+  
+  <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-slate-800">
+    {/* Base Image / Grad-CAM Layer */}
+    <img
+      src={showGradcam ? '/id1_0009_gradcam.png' : '/bradpitt1.png'}
+      alt={showGradcam ? 'GradCAM Heatmap Analysis' : 'Deepfake detection preview frame'}
+      className="w-full h-full object-contain"
+    />
 
-            {/* Interactive Heatmap Toggle Card */}
-            <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 text-center flex flex-col gap-4 overflow-hidden interactive-container">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-slate-400">
-                <span>Interactive Visualizer</span>
-                <span className="text-emerald-400 flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> Live Preview</span>
-              </div>
-              
-              <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-slate-800">
-                <video
-                  ref={videoRef}
-                  playsInline
-                  autoPlay
-                  muted
-                  className="w-full h-full object-cover cursor-pointer"
-                  onClick={handleVideoClick}
-                />
-                <div 
-                  className={`absolute inset-0 pointer-events-none transition-all duration-500 ${
-                    showSpectral 
-                      ? 'bg-linear-to-tr from-indigo-600/40 via-purple-600/40 to-pink-500/40 backdrop-contrast-125' 
-                      : 'bg-transparent'
-                  }`} 
-                />
-                <div className="absolute inset-0 pointer-events-none z-10 flex flex-col items-center justify-center gap-1 px-2 text-center bg-slate-950/40 backdrop-blur-[1px]">
-                  <div className="text-xs font-mono text-slate-300">
-                    {showSpectral ? 'Frequency Domain (FFT Spectral Anomalies)' : 'Spatial Frame Feature Extraction'}
-                  </div>
-                  <div className="text-base sm:text-lg font-bold font-mono text-emerald-400 break-words">
-                    {showSpectral ? 'FFT Anomaly Heatmap' : 'Spatial RGB Frame'}
-                  </div>
-                </div>
-              </div>
+    {/* 3-Second Scanning Animation + Spinner Overlay */}
+    {isScanning && (
+      <>
+        <div className="scanner-anim z-10" />
+        <div className="absolute inset-0 z-20 bg-slate-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2">
+          <RefreshCw className="w-6 h-6 text-emerald-400 animate-spin" />
+          <span className="text-xs font-mono text-emerald-400 bg-slate-900/90 px-3 py-1 rounded-full border border-emerald-500/30">
+            Generating Grad-Cam Heatmap...
+          </span>
+        </div>
+      </>
+    )}
+  </div>
 
-              <button
-                onClick={() => setShowSpectral(!showSpectral)}
-                className="w-full py-2 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono transition-colors border border-slate-700 flex items-center justify-center gap-2"
-              >
-                <RefreshCw className="w-3.5 h-3.5" /> Toggle {showSpectral ? 'Spatial View' : 'Spectral FFT View'}
-              </button>
-
-              {showScanner && <div className="scanner-anim" />}
-              {showGradcam && (
-                <img
-                  src="/id1_0009_gradcam.png"
-                  alt="GradCAM"
-                  className="gradcam-img visible absolute inset-0 w-full h-full object-cover pointer-events-none"
-                />
-              )}
-            </div>
+  {/* Run Detection Analysis Button */}
+  <button
+    onClick={handleToggleSpectral}
+    disabled={isScanning}
+    className="w-full py-2.5 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 text-xs font-mono transition-colors border border-slate-700 flex items-center justify-center gap-2"
+  >
+    <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin' : ''}`} />
+    {isScanning
+      ? 'Generating Grad-Cam Heatmap...'
+      : showGradcam
+      ? 'Reset to Original Frame'
+      : 'Run Detection Analysis'}
+  </button>
+</div>
           </div>
 
           {/* Project 2: StarSeeker */}

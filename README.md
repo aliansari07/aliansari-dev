@@ -90,7 +90,7 @@ app/
   globals.css     # Tailwind import and global styles
 public/
   ali.jpeg
-  BradPitt_.mp4
+  bradpitt1.png
   id1_0009_gradcam.png
   Muhammad_Ali_Ansari_Resume.pdf
 next.config.ts    # Next.js and Turbopack configuration
