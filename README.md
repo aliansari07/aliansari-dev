@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# aliansari.dev
 
-## Getting Started
+Developer portfolio for **Muhammad Ali Ansari**, a backend and full-stack engineer specializing in .NET Core microservices, high-performance C++ algorithms, and PyTorch deep learning pipelines.
 
-First, run the development server:
+The site is a single-page Next.js application with interactive project visualizers, responsive layouts, and a dark, terminal-inspired UI.
+
+## Highlights
+
+### Video Deepfake Detection & Verification System
+
+Dual-stream PyTorch architecture combining spatial (EfficientNet-B0) and frequency-domain (FFT) features with Transformer temporal reasoning.
+
+- **0.9047** validation AUC on FaceForensics++ (C23)
+- Grad-CAM heatmaps for forensic review
+- Interactive spectral/spatial toggle, scanner animation, and Grad-CAM overlay in the browser
+- Stack: PyTorch, Python, OpenCV, REST API
+
+### StarSeeker: Multithreaded A* Pathfinding Engine
+
+Parallelized A* grid pathfinding engine written in C++ with OpenMP.
+
+- **3.8x** speedup across 8 threads on 4096x4096 grids
+- 40% reduction in peak memory via custom allocators
+- Step-by-step 5x5 interactive grid sandbox on the site
+- Stack: C++, C, OpenMP, multithreading, priority queues, memory allocators
+
+### Enterprise Resource Management REST API
+
+.NET Core REST API for resource allocation and user authentication.
+
+- 12 endpoints with repository-pattern data access
+- **85%** business logic coverage across 35 xUnit tests
+- Stack: C#, ASP.NET Core, Entity Framework Core, MS SQL Server, xUnit
+
+### SocioStruct: Society Management Platform
+
+Full-stack event management platform for FAST University.
+
+- JWT authentication, venue scheduling, and live WebSocket updates for 200+ participants
+- Database query latency reduced from ~320ms to under 50ms via indexing
+- Stack: PostgreSQL, Express.js, React, Node.js, WebSockets, Docker, JWT
+
+## Tech Stack
+
+| Layer | Tools |
+| --- | --- |
+| Framework | Next.js 16 (App Router, Turbopack) |
+| UI | React 19, Tailwind CSS v4, lucide-react |
+| Language | TypeScript 5 |
+| Utilities | clsx, tailwind-merge |
+| Assets | next/font (Geist), next/image |
+| Tooling | ESLint 9, TypeScript compiler |
+| Deployment | Vercel |
+
+## Local Setup
+
+### Prerequisites
+
+- Node.js **20.9.0 or newer**
+- npm (or pnpm/yarn/bun)
+
+### Install and run
 
 ```bash
+git clone https://github.com/aliansari07/aliansari-dev.git
+cd aliansari-dev
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+No environment variables are required for the current build.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Available scripts
 
-## Learn More
+```bash
+npm run dev      # Start the development server
+npm run build    # Create an optimized production build
+npm run start    # Serve the production build
+npm run lint     # Run ESLint
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+app/
+  layout.tsx      # Root layout, metadata, and font setup
+  page.tsx        # Single-page portfolio and interactive demos
+  globals.css     # Tailwind import and global styles
+public/
+  ali.jpeg
+  BradPitt_.mp4
+  id1_0009_gradcam.png
+  Muhammad_Ali_Ansari_Resume.pdf
+next.config.ts    # Next.js and Turbopack configuration
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+The project deploys cleanly to Vercel. Import the repository, keep the default Next.js build settings, and deploy.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Connect
+
+- GitHub: [github.com/aliansari07](https://github.com/aliansari07)
+- LinkedIn: [linkedin.com/in/aliansari63224135](https://linkedin.com/in/aliansari63224135)
+- Email: [aliansari224135@gmail.com](mailto:aliansari224135@gmail.com)
+- Resume: [Muhammad_Ali_Ansari_Resume.pdf](./public/Muhammad_Ali_Ansari_Resume.pdf)
