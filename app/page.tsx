@@ -57,9 +57,9 @@ export default function Home() {
     style.textContent = `
       @keyframes scanner-updown-leftright {
         0%   { transform: translate(0, 0); }
-        25%  { transform: translate(100vw, 0); }
-        50%  { transform: translate(100vw, 100vh); }
-        75%  { transform: translate(0, 100vh); }
+        25%  { transform: translate(100%, 0); }
+        50%  { transform: translate(100%, 100%); }
+        75%  { transform: translate(0, 100%); }
         100% { transform: translate(0, 0); }
       }
       .scanner-anim {
@@ -78,6 +78,10 @@ export default function Home() {
         display: none;
       }
       .gradcam-img.visible { display: block; }
+      .interactive-container {
+        position: relative;
+        overflow: hidden;
+      }
       video { width: 100%; height: auto; }
     `;
     document.head.appendChild(style);
@@ -108,10 +112,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen w-full overflow-x-clip bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <a href="#" className="font-mono text-lg font-bold tracking-tight text-slate-100 hover:text-emerald-400 transition-colors">
             aliansari<span className="text-emerald-400">.dev</span>
           </a>
@@ -146,12 +150,12 @@ export default function Home() {
 
         {/* Mobile Dropdown Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-950 border-b border-slate-800 px-6 py-4 flex flex-col gap-4 text-sm font-medium text-slate-300">
-            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">About</a>
-            <a href="#projects" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">Projects</a>
-            <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">Skills</a>
-            <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">Experience</a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400">Contact</a>
+          <div className="md:hidden absolute top-16 left-0 w-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto bg-slate-950/95 backdrop-blur-md border-b border-slate-800 px-4 py-4 flex flex-col gap-1 text-sm font-medium text-slate-300 shadow-xl">
+            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="w-full px-3 py-3 rounded-lg hover:bg-slate-900 hover:text-emerald-400 transition-colors">About</a>
+            <a href="#projects" onClick={() => setMobileMenuOpen(false)} className="w-full px-3 py-3 rounded-lg hover:bg-slate-900 hover:text-emerald-400 transition-colors">Projects</a>
+            <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="w-full px-3 py-3 rounded-lg hover:bg-slate-900 hover:text-emerald-400 transition-colors">Skills</a>
+            <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="w-full px-3 py-3 rounded-lg hover:bg-slate-900 hover:text-emerald-400 transition-colors">Experience</a>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="w-full px-3 py-3 rounded-lg hover:bg-slate-900 hover:text-emerald-400 transition-colors">Contact</a>
             <a
               href="mailto:aliansari224135@gmail.com"
               onClick={() => setMobileMenuOpen(false)}
@@ -165,7 +169,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section id="about" className="relative pt-20 pb-16 px-6 max-w-6xl mx-auto">
+      <section id="about" className="relative pt-16 sm:pt-20 pb-16 px-4 sm:px-6 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
           
           <div className="lg:col-span-7">
@@ -174,7 +178,7 @@ export default function Home() {
               <span>FAST-NUCES &apos;26 - BS Computer Science (CGPA 3.51)</span>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-slate-100 mb-6 max-w-3xl leading-[1.1]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-100 mb-6 max-w-3xl leading-[1.1]">
               Muhammad Ali Ansari
             </h1>
             
@@ -182,27 +186,27 @@ export default function Home() {
               Backend & Full-Stack Engineer specializing in resilient <span className="text-slate-200 font-semibold">.NET Core microservices</span>, high-performance <span className="text-slate-200 font-semibold">C++ algorithms</span>, and <span className="text-slate-200 font-semibold">PyTorch deep learning pipelines</span>.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
               <a 
                 href="#projects" 
-                className="px-6 py-3 rounded-lg bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/10"
+                className="px-6 py-3 rounded-lg bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"
               >
                 View Projects <ChevronRight className="w-4 h-4" />
               </a>
               <a 
-  href="/Muhammad_Ali_Ansari_Resume.pdf" 
-  download="Muhammad_Ali_Ansari_Resume.pdf"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="px-6 py-3 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-400 font-medium text-sm hover:bg-emerald-500/10 transition-all flex items-center gap-2"
->
-  <Download className="w-4 h-4" /> Resume
-</a>
+                href="/Muhammad_Ali_Ansari_Resume.pdf" 
+                download="Muhammad_Ali_Ansari_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-400 font-medium text-sm hover:bg-emerald-500/10 transition-all flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" /> Resume
+              </a>
               <a 
                 href="https://github.com/aliansari07" 
                 target="_blank" 
                 rel="noreferrer"
-                className="px-5 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 font-medium text-sm hover:border-slate-700 hover:text-slate-100 transition-all flex items-center gap-2"
+                className="px-5 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 font-medium text-sm hover:border-slate-700 hover:text-slate-100 transition-all flex items-center justify-center gap-2"
               >
                 <GithubIcon /> GitHub
               </a>
@@ -210,7 +214,7 @@ export default function Home() {
                 href="https://linkedin.com/in/aliansari63224135" 
                 target="_blank" 
                 rel="noreferrer"
-                className="px-5 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 font-medium text-sm hover:border-slate-700 hover:text-slate-100 transition-all flex items-center gap-2"
+                className="px-5 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 font-medium text-sm hover:border-slate-700 hover:text-slate-100 transition-all flex items-center justify-center gap-2"
               >
                 <LinkedinIcon /> LinkedIn
               </a>
@@ -223,27 +227,20 @@ export default function Home() {
               
               <div className="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-2xl">
                 <Image 
-  src="/ali.jpeg" 
-  alt="Muhammad Ali Ansari" 
-  width={320}
-  height={380}
-  priority
-  className="w-full h-auto object-cover object-top filter brightness-105 contrast-105 group-hover:scale-105 transition-transform duration-500"
-/>
-                <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4 text-center">
-                  <span className="text-xs font-mono text-emerald-400 bg-slate-950/80 border border-emerald-500/20 px-3 py-1 rounded-full backdrop-blur-md">
-                    Karachi, Pakistan 🇵🇰
-                  </span>
-                </div>
-              </div>
+                  src="/ali.jpeg" 
+                  alt="Muhammad Ali Ansari" 
+                  width={320}
+                  height={380}
+                  priority
+                  className="w-full h-auto object-cover object-top filter brightness-105 contrast-105 group-hover:scale-105 transition-transform duration-500"
+                />
             </div>
           </div>
-
+          </div>
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 sm:p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
           <div>
             <div className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">0.9047</div>
             <div className="text-xs text-slate-400 mt-1">Validation AUC on FaceForensics++</div>
@@ -264,7 +261,7 @@ export default function Home() {
       </section>
 
       {/* Featured Projects */}
-      <section id="projects" className="py-16 px-6 max-w-6xl mx-auto border-t border-slate-800/60">
+      <section id="projects" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60">
         <div className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2">Featured Engineering Works</h2>
           <p className="text-slate-400 text-sm">Interactive showpieces highlighting AI systems, low-level algorithms, and microservices.</p>
@@ -273,9 +270,9 @@ export default function Home() {
         <div className="space-y-10">
 
           {/* Project 1: Deepfake Detection */}
-          <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400">
                 <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Final Year Project</span>
                 <span>PyTorch - OpenCV - REST API</span>
               </div>
@@ -293,50 +290,60 @@ export default function Home() {
             </div>
 
             {/* Interactive Heatmap Toggle Card */}
-            <div className="lg:col-span-5 p-5 rounded-xl bg-slate-950 border border-slate-800 text-center space-y-4 h-[400px] min-h-[300px] overflow-hidden">
-  {/* Brad Pitt video – keeps playing, muted for autoplay */}
-  <video
-    ref={videoRef}
-    playsInline
-    autoPlay
-    muted
-    className="w-full h-48 object-cover"
-    onClick={handleVideoClick}
-  />
-  <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
+            <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 text-center flex flex-col gap-4 overflow-hidden interactive-container">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-slate-400">
                 <span>Interactive Visualizer</span>
                 <span className="text-emerald-400 flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> Live Preview</span>
               </div>
+              
               <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-slate-800">
+                <video
+                  ref={videoRef}
+                  playsInline
+                  autoPlay
+                  muted
+                  className="w-full h-full object-cover cursor-pointer"
+                  onClick={handleVideoClick}
+                />
                 <div 
-                  className={`absolute inset-0 transition-all duration-500 ${
+                  className={`absolute inset-0 pointer-events-none transition-all duration-500 ${
                     showSpectral 
                       ? 'bg-linear-to-tr from-indigo-600/40 via-purple-600/40 to-pink-500/40 backdrop-contrast-125' 
-                      : 'bg-slate-900/80'
+                      : 'bg-transparent'
                   }`} 
                 />
-                <div className="z-10 text-center p-4">
-                  <div className="text-xs font-mono text-slate-300 mb-1">
+                <div className="absolute inset-0 pointer-events-none z-10 flex flex-col items-center justify-center gap-1 px-2 text-center bg-slate-950/40 backdrop-blur-[1px]">
+                  <div className="text-xs font-mono text-slate-300">
                     {showSpectral ? 'Frequency Domain (FFT Spectral Anomalies)' : 'Spatial Frame Feature Extraction'}
                   </div>
-                  <div className="text-xl font-bold font-mono text-emerald-400">
+                  <div className="text-base sm:text-lg font-bold font-mono text-emerald-400 break-words">
                     {showSpectral ? 'FFT Anomaly Heatmap' : 'Spatial RGB Frame'}
                   </div>
                 </div>
               </div>
-<button
+
+              <button
                 onClick={() => setShowSpectral(!showSpectral)}
                 className="w-full py-2 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono transition-colors border border-slate-700 flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-3.5 h-3.5" /> Toggle {showSpectral ? 'Spatial View' : 'Spectral FFT View'}
               </button>
+
+              {showScanner && <div className="scanner-anim" />}
+              {showGradcam && (
+                <img
+                  src="/id1_0009_gradcam.png"
+                  alt="GradCAM"
+                  className="gradcam-img visible absolute inset-0 w-full h-full object-cover pointer-events-none"
+                />
+              )}
             </div>
-            {showScanner && <div className="scanner-anim" />}
-            {showGradcam && (<img src="/id1_0009_gradcam.png" alt="GradCAM" className="gradcam-img visible" />)}
           </div>
-          <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+
+          {/* Project 2: StarSeeker */}
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400">
                 <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Systems & High Performance</span>
                 <span>C++ - OpenMP - Parallel Computing</span>
               </div>
@@ -354,8 +361,8 @@ export default function Home() {
             </div>
 
             {/* Step-by-step Interactive Grid Sandbox */}
-            <div className="lg:col-span-5 p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between text-xs font-mono text-slate-400">
+            <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-slate-400">
                 <span>5x5 Mini Grid Visualizer</span>
                 <span>{activePath.length > 0 ? 'Path Solved' : isPathfinding ? 'Exploring...' : 'A* Idle'}</span>
               </div>
@@ -385,7 +392,7 @@ export default function Home() {
                   })
                 )}
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   onClick={runAStarDemo}
                   disabled={isPathfinding}
@@ -395,25 +402,17 @@ export default function Home() {
                 </button>
                 <button
                   onClick={resetGrid}
-                  className="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono transition-colors"
+                  className="w-full sm:w-auto py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono transition-colors"
                 >
                   Reset
                 </button>
               </div>
-</div>
-           </div>
-          {/* Brad Pitt video – keeps playing, muted for autoplay */}
-          <video
-            ref={videoRef}
-            playsInline
-            autoPlay
-            muted
-            className="w-full h-48 object-cover"
-            onClick={handleVideoClick}
-          />
-           {/* Project 3: Enterprise Resource Management */}
-          <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all">
-            <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 mb-3">
+            </div>
+          </div>
+
+          {/* Project 3: Enterprise Resource Management */}
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400 mb-3">
               <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Enterprise Backend</span>
               <span>ASP.NET Core - EF Core - MS SQL Server</span>
             </div>
@@ -431,8 +430,8 @@ export default function Home() {
           </div>
 
           {/* Project 4: SocioStruct Platform */}
-          <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all">
-            <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 mb-3">
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400 mb-3">
               <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Full-Stack & WebSockets</span>
               <span>PERN Stack - Docker</span>
             </div>
@@ -453,14 +452,14 @@ export default function Home() {
       </section>
 
       {/* Technical Skills Overview */}
-      <section id="skills" className="py-16 px-6 max-w-6xl mx-auto border-t border-slate-800/60">
+      <section id="skills" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60">
         <div className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2">Technical Proficiency</h2>
           <p className="text-slate-400 text-sm">A structured breakdown of languages, frameworks, and developer tools.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex items-center gap-3 mb-4 text-emerald-400">
               <Code2 className="w-5 h-5" />
               <h3 className="font-semibold text-slate-200">Languages</h3>
@@ -474,7 +473,7 @@ export default function Home() {
             </ul>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex items-center gap-3 mb-4 text-emerald-400">
               <Server className="w-5 h-5" />
               <h3 className="font-semibold text-slate-200">Backend & Web</h3>
@@ -488,7 +487,7 @@ export default function Home() {
             </ul>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex items-center gap-3 mb-4 text-emerald-400">
               <Database className="w-5 h-5" />
               <h3 className="font-semibold text-slate-200">Databases & DevOps</h3>
@@ -505,15 +504,15 @@ export default function Home() {
       </section>
 
       {/* Leadership & Experience */}
-      <section id="experience" className="py-16 px-6 max-w-6xl mx-auto border-t border-slate-800/60">
+      <section id="experience" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60">
         <div className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2 font-mono">Leadership & Industry Experience</h2>
           <p className="text-slate-400 text-sm">Professional software engineering roles, academic work, and leadership positions.</p>
         </div>
 
         <div className="space-y-6">
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Software Engineer Intern — 10Pearls</h3>
               <span className="text-xs font-mono text-emerald-400">Karachi, Pakistan - Sept 2026 - Present</span>
             </div>
@@ -522,8 +521,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Teaching Assistant — Data Structures Lab (CL2001)</h3>
               <span className="text-xs font-mono text-emerald-400">FAST-NUCES Karachi — Fall 2025</span>
             </div>
@@ -532,8 +531,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">President & Director of PR — FAST Data Science Society</h3>
               <span className="text-xs font-mono text-emerald-400">FAST-NUCES Karachi - Fall 2023</span>
             </div>
@@ -542,8 +541,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Deputy Head Boy — Student Council (A levels)</h3>
               <span className="text-xs font-mono text-emerald-400">The City School — Aug 2021 to Jul 2022</span>
             </div>
@@ -552,8 +551,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-900/40 border border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Head Boy — Student Council (O levels)</h3>
               <span className="text-xs font-mono text-emerald-400">The City School — Aug 2019 to Jul 2020</span>
             </div>
@@ -565,7 +564,7 @@ export default function Home() {
       </section>
 
       {/* Footer Contact */}
-      <footer id="contact" className="py-16 px-6 max-w-6xl mx-auto border-t border-slate-800/60 text-center">
+      <footer id="contact" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60 text-center">
         <h2 className="text-2xl font-bold text-slate-100 mb-4">Let&apos;s Connect</h2>
         <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto">
           Currently open to software development opportunities, backend engineering roles, and collaborative projects.
