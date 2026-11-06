@@ -2,10 +2,12 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
+import { MotionConfig } from 'framer-motion';
 import { 
   Mail, Code2, Server, Database, Sparkles, 
-  ChevronRight, Play, RefreshCw, Eye, Download, Menu, X 
+  ChevronRight, Play, RefreshCw, Eye, Download, Menu, X, ExternalLink 
 } from 'lucide-react';
+import Reveal from '@/components/Reveal';
 
 const GithubIcon = () => (
   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -46,6 +48,16 @@ const THREAD_COLORS = [
   'bg-indigo-500/30 text-indigo-200 border-indigo-500/40',
   'bg-fuchsia-500/30 text-fuchsia-200 border-fuchsia-500/40',
 ];
+
+const PROJECT_LINKS = {
+  deepfake: 'https://github.com/aliansari07/deepfake-detection',
+  starseeker: 'https://github.com/aliansari07/StarSeeker',
+  erms: 'https://github.com/aliansari07/Enterprise-Resource-Management-System',
+  sociostruct: 'https://github.com/aliansari07/SocioStruct',
+} as const;
+
+const EMAIL_ADDRESS = 'aliansari224135@gmail.com';
+const EMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL_ADDRESS}`;
 
 const findPath = (
   walls: number[][],
@@ -259,10 +271,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen w-full overflow-x-clip bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen w-full overflow-x-clip bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <a href="#" className="font-mono text-lg font-bold tracking-tight text-slate-100 hover:text-emerald-400 transition-colors">
             aliansari<span className="text-emerald-400">.dev</span>
           </a>
@@ -277,7 +290,8 @@ export default function Home() {
 
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="mailto:aliansari224135@gmail.com"
+              href={EMAIL_COMPOSE_URL}
+              aria-label={`Email ${EMAIL_ADDRESS}`}
               className="px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5"
             >
               <Mail className="w-3.5 h-3.5" />
@@ -304,8 +318,9 @@ export default function Home() {
             <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="w-full px-3 py-3 rounded-lg hover:bg-slate-900 hover:text-emerald-400 transition-colors">Experience</a>
             <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="w-full px-3 py-3 rounded-lg hover:bg-slate-900 hover:text-emerald-400 transition-colors">Contact</a>
             <a
-              href="mailto:aliansari224135@gmail.com"
+              href={EMAIL_COMPOSE_URL}
               onClick={() => setMobileMenuOpen(false)}
+              aria-label={`Email ${EMAIL_ADDRESS}`}
               className="mt-2 w-full py-2.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-center flex items-center justify-center gap-2"
             >
               <Mail className="w-4 h-4" />
@@ -316,10 +331,10 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section id="about" className="relative pt-16 sm:pt-20 pb-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      <section id="about" className="relative pt-16 sm:pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
           
-          <div className="lg:col-span-7">
+          <Reveal className="lg:col-span-7">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-6">
               <Sparkles className="w-3.5 h-3.5" />
               <span>FAST-NUCES &apos;26 - BS Computer Science (CGPA 3.51)</span>
@@ -366,9 +381,9 @@ export default function Home() {
                 <LinkedinIcon /> LinkedIn
               </a>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="lg:col-span-5 flex justify-center">
+          <Reveal className="lg:col-span-5 flex justify-center" delay={0.15}>
             <div className="relative group max-w-[320px] w-full">
               <div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-emerald-500 to-teal-500 opacity-30 blur-lg group-hover:opacity-60 transition duration-500"></div>
               
@@ -383,48 +398,59 @@ export default function Home() {
                 />
               </div>
             </div>
-          </div>
+          </Reveal>
 
         </div>
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 sm:p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm">
-          <div>
+          <Reveal delay={0}>
             <div className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">0.9047</div>
             <div className="text-xs text-slate-400 mt-1">Validation AUC on FaceForensics++</div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal delay={0.08}>
             <div className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">3.8x</div>
             <div className="text-xs text-slate-400 mt-1">Pathfinding Speedup (OpenMP)</div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal delay={0.16}>
             <div className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">85%</div>
             <div className="text-xs text-slate-400 mt-1">Unit Test Coverage (xUnit)</div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal delay={0.24}>
             <div className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">200+</div>
             <div className="text-xs text-slate-400 mt-1">Students Reached via FDSS Workshops</div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Featured Projects */}
-      <section id="projects" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60">
-        <div className="mb-12">
+      <section id="projects" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/60">
+        <Reveal className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2">Featured Engineering Works</h2>
           <p className="text-slate-400 text-sm">Interactive showpieces highlighting AI systems, low-level algorithms, and microservices.</p>
-        </div>
+        </Reveal>
 
         <div className="space-y-10">
 
           {/* Project 1: Deepfake Detection */}
-          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          <Reveal>
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-emerald-500/40 transition-all grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
               <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400">
                 <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Final Year Project</span>
                 <span>PyTorch - OpenCV - REST API</span>
               </div>
-              <h3 className="text-xl font-bold text-slate-100">Video Deepfake Detection & Verification System</h3>
+              <h3 className="text-xl font-bold text-slate-100">
+                <a
+                  href={PROJECT_LINKS.deepfake}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 hover:text-emerald-400 transition-colors"
+                >
+                  Video Deepfake Detection & Verification System
+                  <ExternalLink className="w-4 h-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+                </a>
+              </h3>
               <p className="text-slate-400 text-sm leading-relaxed">
                 Dual-stream architecture combining spatial (EfficientNet-B0) and frequency-domain (FFT) features with Transformer temporal reasoning. Achieved <strong className="text-slate-200">0.9047 validation AUC</strong> on FaceForensics++ (C23) with Grad-CAM heatmaps for forensic review.
               </p>
@@ -447,10 +473,12 @@ export default function Home() {
   
   <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900 flex items-center justify-center border border-slate-800">
     {/* Base Image / Grad-CAM Layer */}
-    <img
+    <Image
       src={showGradcam ? '/id1_0009_gradcam.png' : '/bradpitt1.png'}
       alt={showGradcam ? 'GradCAM Heatmap Analysis' : 'Deepfake detection preview frame'}
-      className="w-full h-full object-contain"
+      fill
+      sizes="(max-width: 1024px) 100vw, 40vw"
+      className="object-contain"
     />
 
     {/* 3-Second Scanning Animation + Spinner Overlay */}
@@ -482,15 +510,27 @@ export default function Home() {
   </button>
 </div>
           </div>
+          </Reveal>
 
           {/* Project 2: StarSeeker */}
-          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          <Reveal delay={0.1}>
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-emerald-500/40 transition-all grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
               <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400">
                 <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Systems & High Performance</span>
                 <span>C++ - OpenMP - Parallel Computing</span>
               </div>
-              <h3 className="text-xl font-bold text-slate-100">StarSeeker: Multithreaded A* Pathfinding Engine</h3>
+              <h3 className="text-xl font-bold text-slate-100">
+                <a
+                  href={PROJECT_LINKS.starseeker}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 hover:text-emerald-400 transition-colors"
+                >
+                  StarSeeker: Multithreaded A* Pathfinding Engine
+                  <ExternalLink className="w-4 h-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+                </a>
+              </h3>
               <p className="text-slate-400 text-sm leading-relaxed">
                 Parallelized A* grid pathfinding engine built in C++ with OpenMP. Parallelized search loops across 8 threads on 4096x4096 grids, achieving a <strong className="text-slate-200">3.8x speedup</strong> and reducing peak memory usage by 40% with custom allocators.
               </p>
@@ -590,14 +630,26 @@ export default function Home() {
               </div>
             </div>
           </div>
+          </Reveal>
 
           {/* Project 3: Enterprise Resource Management */}
-          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all">
+          <Reveal delay={0.2}>
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-emerald-500/40 transition-all">
             <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400 mb-3">
               <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Enterprise Backend</span>
               <span>ASP.NET Core - EF Core - MS SQL Server</span>
             </div>
-            <h3 className="text-xl font-bold text-slate-100 mb-2">Enterprise Resource Management REST API</h3>
+            <h3 className="text-xl font-bold text-slate-100 mb-2">
+              <a
+                href={PROJECT_LINKS.erms}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 hover:text-emerald-400 transition-colors"
+              >
+                Enterprise Resource Management REST API
+                <ExternalLink className="w-4 h-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+              </a>
+            </h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-4 max-w-3xl">
               Engineered a .NET Core REST API featuring 12 endpoints for resource allocation and user authentication. Decoupled data access using repository patterns to enable isolated testing, reaching <strong className="text-slate-200">85% business logic coverage across 35 xUnit tests</strong>.
             </p>
@@ -609,14 +661,26 @@ export default function Home() {
               ))}
             </div>
           </div>
+          </Reveal>
 
           {/* Project 4: SocioStruct Platform */}
-          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-slate-700 transition-all">
+          <Reveal delay={0.3}>
+          <div className="p-4 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-emerald-500/40 transition-all">
             <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-emerald-400 mb-3">
               <span className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20">Full-Stack & WebSockets</span>
               <span>PERN Stack - Docker</span>
             </div>
-            <h3 className="text-xl font-bold text-slate-100 mb-2">SocioStruct: Society Management Platform</h3>
+            <h3 className="text-xl font-bold text-slate-100 mb-2">
+              <a
+                href={PROJECT_LINKS.sociostruct}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 hover:text-emerald-400 transition-colors"
+              >
+                SocioStruct: Society Management Platform
+                <ExternalLink className="w-4 h-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+              </a>
+            </h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-4 max-w-3xl">
               Full-stack event management platform for FAST University with JWT authentication, venue scheduling, and live WebSocket updates tracking 200+ participants. Reduced key database query latency from <strong className="text-slate-200">~320ms to under 50ms</strong> via indexing.
             </p>
@@ -628,18 +692,20 @@ export default function Home() {
               ))}
             </div>
           </div>
+          </Reveal>
 
         </div>
       </section>
 
       {/* Technical Skills Overview */}
-      <section id="skills" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60">
-        <div className="mb-12">
+      <section id="skills" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/60">
+        <Reveal className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2">Technical Proficiency</h2>
           <p className="text-slate-400 text-sm">A structured breakdown of languages, frameworks, and developer tools.</p>
-        </div>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Reveal>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex items-center gap-3 mb-4 text-emerald-400">
               <Code2 className="w-5 h-5" />
@@ -653,7 +719,9 @@ export default function Home() {
               <li>• SQL</li>
             </ul>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.1}>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex items-center gap-3 mb-4 text-emerald-400">
               <Server className="w-5 h-5" />
@@ -667,7 +735,9 @@ export default function Home() {
               <li>• REST API & WebSockets</li>
             </ul>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.2}>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex items-center gap-3 mb-4 text-emerald-400">
               <Database className="w-5 h-5" />
@@ -681,17 +751,19 @@ export default function Home() {
               <li>• xUnit / Unit Testing</li>
             </ul>
           </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Leadership & Experience */}
-      <section id="experience" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60">
-        <div className="mb-12">
+      <section id="experience" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/60">
+        <Reveal className="mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2 font-mono">Leadership & Industry Experience</h2>
           <p className="text-slate-400 text-sm">Professional software engineering roles, academic work, and leadership positions.</p>
-        </div>
+        </Reveal>
 
         <div className="space-y-6">
+          <Reveal>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Software Engineer Intern — 10Pearls</h3>
@@ -701,7 +773,9 @@ export default function Home() {
               Engineered full-stack web application modules using ASP.NET Core Web API for scalable backend microservices and React.js for interactive frontend interfaces. Participated in daily Agile standups, code reviews, and RESTful API integrations across project sprints.
             </p>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.08}>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Teaching Assistant — Data Structures Lab (CL2001)</h3>
@@ -711,7 +785,9 @@ export default function Home() {
               Managed weekly lab sessions for Section BDS-3A, evaluated student C++ implementations, graded course hackathons, and guided students in pointer arithmetic, memory management, and tree/graph traversal algorithms.
             </p>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.16}>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">President & Director of PR — FAST Data Science Society</h3>
@@ -721,7 +797,9 @@ export default function Home() {
               Led a 10-member team to plan and execute 3 technical workshops and competitions reaching over 200 students across campus.
             </p>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.24}>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Deputy Head Boy — Student Council (A levels)</h3>
@@ -731,7 +809,9 @@ export default function Home() {
               Spearheaded student life and community initiatives, including a beach cleanup drive with 50+ student volunteers and a food distribution drive serving 200+ families. Won Mindstorm Robotics Competition, placed 1st in the 100m sports day race, and served as Room President at ContestOne debating event.
             </p>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.32}>
           <div className="p-4 sm:p-6 rounded-xl bg-slate-900/40 border border-slate-800">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
               <h3 className="text-lg font-semibold text-slate-100">Head Boy — Student Council (O levels)</h3>
@@ -741,35 +821,40 @@ export default function Home() {
               Led student body representation and organized campus events including Teacher&apos;s Day, Qawwali Night, and conceptualized &quot;InspireII&quot; Science Olympiad. Led the school debate team to multiple victories, secured 2nd place as runners-up in inter-branch robotics, and earned High-Achiever recognition on the school honor wall.
             </p>
           </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Footer Contact */}
-      <footer id="contact" className="py-16 px-4 sm:px-6 max-w-6xl mx-auto border-t border-slate-800/60 text-center">
-        <h2 className="text-2xl font-bold text-slate-100 mb-4">Let&apos;s Connect</h2>
-        <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto">
-          Currently open to software development opportunities, backend engineering roles, and collaborative projects.
-        </p>
-        <div className="flex justify-center items-center gap-6 mb-12">
-          <a
-            href="mailto:aliansari224135@gmail.com"
-            title="Email Me"
-            className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all flex items-center justify-center"
-          >
-            <Mail className="w-5 h-5" />
-          </a>
-          <a href="https://github.com/aliansari07" target="_blank" rel="noreferrer" className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
-            <GithubIcon />
-          </a>
-          <a href="https://linkedin.com/in/aliansari63224135" target="_blank" rel="noreferrer" className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
-            <LinkedinIcon />
-          </a>
-        </div>
-        <p className="text-xs text-slate-600 font-mono">
-          © 2026 Muhammad Ali Ansari • Built with Next.js & Tailwind CSS
-        </p>
+      <footer id="contact" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/60 text-center">
+        <Reveal>
+          <h2 className="text-2xl font-bold text-slate-100 mb-4">Let&apos;s Connect</h2>
+          <p className="text-slate-400 text-sm mb-8 max-w-md mx-auto">
+            Currently open to software development opportunities, backend engineering roles, and collaborative projects.
+          </p>
+          <div className="flex justify-center items-center gap-6 mb-12">
+            <a
+              href={EMAIL_COMPOSE_URL}
+              title={`Email ${EMAIL_ADDRESS}`}
+              aria-label={`Email ${EMAIL_ADDRESS}`}
+              className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all flex items-center justify-center"
+            >
+              <Mail className="w-5 h-5" />
+            </a>
+            <a href="https://github.com/aliansari07" target="_blank" rel="noreferrer" className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
+              <GithubIcon />
+            </a>
+            <a href="https://linkedin.com/in/aliansari63224135" target="_blank" rel="noreferrer" className="p-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-all">
+              <LinkedinIcon />
+            </a>
+          </div>
+          <p className="text-xs text-slate-600 font-mono">
+            © 2026 Muhammad Ali Ansari • Built with Next.js & Tailwind CSS
+          </p>
+        </Reveal>
       </footer>
 
-    </div>
+      </div>
+    </MotionConfig>
   );
 }
